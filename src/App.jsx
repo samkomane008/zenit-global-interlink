@@ -17,7 +17,7 @@ const SOCIAL_LINKS = [
 const CONTACT = {
   phone: "067 202 7777",
   phoneHref: "tel:+27672027777",
-  email: "zenitglobe@gmail.com",
+  email: "info@zenitglobal.co.za",
   location: "Centurion, Gauteng, South Africa",
 };
 
