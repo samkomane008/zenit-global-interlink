@@ -296,7 +296,7 @@ function TrustStats() {
     { val: 7, suffix: "", label: "Cross-Border Routes" },
   ];
   return (
-    <section className="relative bg-white py-16 -mt-1">
+    <section className="relative bg-[#EDF2F8] py-16 -mt-1">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 rounded-2xl border border-slate-100 shadow-[0_8px_40px_rgba(11,31,58,0.06)] p-8 lg:p-10" style={{ background: "linear-gradient(180deg, #fff, #F8FAFC)" }}>
           {stats.map((s, i) => (
@@ -324,7 +324,7 @@ const SERVICES = [
 
 function Services({ setPage }) {
   return (
-    <section className="bg-[#F8FAFC] py-24">
+    <section className="bg-[#F5F8FC] py-24">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <Reveal>
           <div className="max-w-2xl mb-14">
@@ -420,7 +420,7 @@ function ServicesPage({ setPage }) {
   return (
     <>
       <PageHeader eyebrow="Our Services" title="Logistics Solutions Built For Scale" subtitle="Detailed, dependable services covering every link in your supply chain — from first mile to final delivery." />
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-[#EDF2F8]">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 space-y-10">
           {SERVICES.map((s, i) => {
             const Icon = s.icon;
@@ -472,7 +472,7 @@ function IndustriesPage() {
   return (
     <>
       <PageHeader eyebrow="Industries We Serve" title="Trusted Across Every Major Sector" subtitle="Wherever your goods need to move, we bring sector-specific expertise to keep your operation running." />
-      <section className="py-20 bg-[#F8FAFC]">
+      <section className="py-20 bg-[#F5F8FC]">
         <div className="max-w-7xl mx-auto px-6 lg:px-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {INDUSTRIES.map((ind, i) => {
             const Icon = ind.icon;
@@ -505,7 +505,7 @@ function AboutPage() {
   return (
     <>
       <PageHeader eyebrow="About Zenit" title="Taking You To Greater Heights" />
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-[#EDF2F8]">
         <div className="max-w-4xl mx-auto px-6 lg:px-10">
           <Reveal>
             <p className="text-lg text-[#344054] leading-relaxed">
@@ -517,7 +517,7 @@ function AboutPage() {
           </Reveal>
         </div>
       </section>
-      <section className="py-20 bg-[#F8FAFC]">
+      <section className="py-20 bg-[#F5F8FC]">
         <div className="max-w-5xl mx-auto px-6 lg:px-10">
           <Reveal><h2 className="font-extrabold text-3xl mb-14 text-center" style={{ fontFamily: "Poppins, sans-serif", color: "#0B1F3A" }}>Our Journey</h2></Reveal>
           <div className="relative">
@@ -556,7 +556,7 @@ function NetworkPage() {
   return (
     <>
       <PageHeader eyebrow="Global Network" title="Connected Across Southern Africa" subtitle="Our cross-border network spans eight countries, with dedicated route partners and customs expertise at every post." />
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-[#EDF2F8]">
         <div className="max-w-6xl mx-auto px-6 lg:px-10 grid lg:grid-cols-2 gap-12 items-center">
           <Reveal>
             <div className="relative p-10 rounded-3xl border border-slate-100 overflow-hidden" style={{ background: "linear-gradient(160deg, #0B1F3A, #0d2547)" }}>
@@ -583,7 +583,7 @@ function NetworkPage() {
           </div>
         </div>
       </section>
-      <section className="py-20 bg-[#F8FAFC]">
+      <section className="py-20 bg-[#F5F8FC]">
         <div className="max-w-6xl mx-auto px-6 lg:px-10">
           <Reveal><h2 className="font-extrabold text-3xl mb-14 text-center" style={{ fontFamily: "Poppins, sans-serif", color: "#0B1F3A" }}>Our Freight Process</h2></Reveal>
           <div className="grid lg:grid-cols-5 gap-6">
@@ -613,7 +613,7 @@ const TESTIMONIALS = [
 
 function TestimonialsSection() {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-[#EDF2F8]">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <Reveal><h2 className="font-extrabold text-3xl mb-14 text-center" style={{ fontFamily: "Poppins, sans-serif", color: "#0B1F3A" }}>What Our Clients Say</h2></Reveal>
         <div className="grid lg:grid-cols-3 gap-6">
@@ -652,7 +652,7 @@ function FAQPage() {
   return (
     <>
       <PageHeader eyebrow="Support" title="Frequently Asked Questions" />
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-[#EDF2F8]">
         <div className="max-w-3xl mx-auto px-6 lg:px-10 space-y-4">
           {FAQS.map((f, i) => (
             <Reveal key={f.q} delay={i * 60}>
@@ -726,7 +726,7 @@ function QuotePage({ onAction }) {
   return (
     <>
       <PageHeader eyebrow="Get Started" title="Request A Freight Quote" subtitle="Tell us about your shipment and our logistics team will respond within 24 hours." />
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-[#EDF2F8]">
         <div className="max-w-3xl mx-auto px-6 lg:px-10">
           <Reveal>
             <form onSubmit={handleSubmit} noValidate className="rounded-3xl border border-slate-100 p-8 lg:p-10 shadow-[0_8px_40px_rgba(11,31,58,0.06)]">
@@ -840,7 +840,7 @@ function ContactPage({ onAction }) {
   return (
     <>
       <PageHeader eyebrow="Get In Touch" title="Contact Our Team" />
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-[#EDF2F8]">
         <div className="max-w-6xl mx-auto px-6 lg:px-10 grid lg:grid-cols-2 gap-12">
           <Reveal>
             <div className="space-y-5">
@@ -1004,7 +1004,7 @@ export default function ZenitSite() {
   };
 
   return (
-    <div className="w-full bg-white" style={{ fontFamily: "Inter, sans-serif" }}>
+    <div className="w-full bg-[#EDF2F8]" style={{ fontFamily: "Inter, sans-serif" }}>
       <Nav page={page} setPage={setPage} />
       {pages[page] || pages.home}
       <Footer setPage={setPage} onAction={handleAction} />
