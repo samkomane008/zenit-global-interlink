@@ -94,24 +94,61 @@ git push -u origin main
 
 ---
 
-## 3. Custom domain (optional)
+## 3. Custom domain
 
-To serve the site from `zenitglobal.co.za` (or similar):
+The site is served from **`zenitglobal.co.za`**. The domain is pinned by
+`public/CNAME` (copied into the build as `dist/CNAME`), so GitHub Pages keeps it
+across deploys, and the canonical / Open Graph / JSON-LD URLs in `index.html`
+already point at it.
 
-1. Buy the domain (e.g. via [domains.co.za](https://www.domains.co.za) or any registrar).
-2. In **Settings → Pages → Custom domain**, enter your domain and save.
-3. At your domain registrar, add DNS records:
-   - For an apex domain (`zenitglobal.co.za`), add four **A records** pointing to
-     GitHub's IPs: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`,
-     `185.199.111.153`.
-   - For `www`, add a **CNAME** record pointing to `<your-username>.github.io`.
-4. Tick **Enforce HTTPS** once the certificate is issued (can take a few minutes).
-5. Update the `<link rel="canonical">` and Open Graph URLs in `index.html` to your
-   real domain.
+To (re)connect the domain:
+
+1. In **Settings → Pages → Custom domain**, enter `zenitglobal.co.za` and save.
+2. At your DNS provider, add the **web** records:
+   - Apex (`@`): four **A records** to GitHub's IPs — `185.199.108.153`,
+     `185.199.109.153`, `185.199.110.153`, `185.199.111.153`.
+   - `www`: a **CNAME** to `samkomane008.github.io`.
+3. Tick **Enforce HTTPS** once the certificate is issued (can take a few minutes).
+
+If you move to a different domain, update `public/CNAME` **and** the canonical /
+`og:url` / JSON-LD `url` values in `index.html`.
 
 ---
 
-## 4. Things you'll want to customise
+## 4. Email — `info@zenitglobal.co.za` (Zoho Mail)
+
+Mail is hosted on **Zoho Mail**. Email records live on the **apex** and coexist
+fine with the GitHub Pages A-records above (different record types). Values below
+are Zoho's global/US data centre — if your Zoho account is on `zoho.eu` /
+`zoho.in`, use the regional equivalents the Zoho wizard shows.
+
+Setup order in Zoho: add domain → verify → create the `info@` mailbox → MX →
+DKIM → SPF + DMARC.
+
+| Purpose | Host | Type | Priority | Value |
+| ------- | ---- | ---- | -------- | ----- |
+| Verify domain | *(from Zoho — CNAME `zb******` → `zmverify.zoho.com`, or TXT `zoho-verification=zb******.zmverify.zoho.com`)* | | | |
+| Receive mail | `@` | MX | 10 | `mx.zoho.com` |
+| Receive mail | `@` | MX | 20 | `mx2.zoho.com` |
+| Receive mail | `@` | MX | 50 | `mx3.zoho.com` |
+| SPF | `@` | TXT | — | `v=spf1 include:zoho.com ~all` |
+| DKIM | `zmail._domainkey` | TXT | — | `v=DKIM1; k=rsa; p=<key generated in Zoho console>` |
+| DMARC | `_dmarc` | TXT | — | `v=DMARC1; p=quarantine; rua=mailto:info@zenitglobal.co.za` |
+
+Notes:
+
+- Remove any default/registrar MX records so mail doesn't misroute.
+- Only **one** SPF (`v=spf1`) TXT record may exist on the apex — merge if one
+  already exists.
+- Generate the DKIM key under **Zoho Admin Console → Email Configuration → DKIM**
+  (default selector `zmail`), then click **Verify** to activate.
+- **Contact form delivery** is separate: quote/contact submissions go wherever the
+  **Web3Forms** access key (`VITE_WEB3FORMS_KEY`) is registered — set that
+  account's receiving address to `info@zenitglobal.co.za` once the mailbox is live.
+
+---
+
+## 5. Things you'll want to customise
 
 | What                  | Where                                                        |
 | --------------------- | ----------------------------------------------------------- |
@@ -120,7 +157,7 @@ To serve the site from `zenitglobal.co.za` (or similar):
 | Services / industries / FAQ copy | The `SERVICES`, `INDUSTRIES`, `FAQS` arrays in `src/App.jsx` |
 | Timeline / company history | `TIMELINE` array in `src/App.jsx`                       |
 | SEO title & description | `index.html` (`<title>`, meta tags, JSON-LD)              |
-| Brand colours         | `tailwind.config.js` and inline `#0B1F3A` / `#FF7A00` values |
+| Brand colours         | `tailwind.config.js` and inline `#0B1F3A` (navy) / `#0E7AC0` (azure) values |
 
 ---
 
