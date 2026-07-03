@@ -1,7 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <radialGradient id="fav-sphere" cx="37%" cy="29%" r="78%">
+      <stop offset="0%" stop-color="#EAF7FF"/>
+      <stop offset="26%" stop-color="#9BD7F5"/>
+      <stop offset="60%" stop-color="#2E97D6"/>
+      <stop offset="100%" stop-color="#0B4F86"/>
+    </radialGradient>
+    <linearGradient id="fav-arrow" x1="12" y1="32" x2="34" y2="15" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0B5D9E"/>
+      <stop offset="100%" stop-color="#2E97D6"/>
+    </linearGradient>
+  </defs>
   <rect width="48" height="48" rx="10" fill="#0B1F3A"/>
-  <circle cx="24" cy="24" r="14" stroke="#FFFFFF" stroke-width="2"/>
-  <path d="M10 24h28" stroke="#FFFFFF" stroke-width="1.4" opacity="0.5"/>
-  <path d="M14 26c4 6 14 9 22 2" stroke="#FF7A00" stroke-width="2.6" stroke-linecap="round"/>
-  <path d="M30 22.5l7 4.5-7 4.5" stroke="#FF7A00" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="#FF7A00"/>
+  <circle cx="24" cy="24" r="15" fill="url(#fav-sphere)"/>
+  <ellipse cx="18.8" cy="16" rx="8.5" ry="4.6" fill="#FFFFFF" opacity="0.5"/>
+  <path d="M12 30c6.6 1.5 13.6-0.7 18.8-8.4" fill="none" stroke="url(#fav-arrow)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M25.4 20.6l6.6-2.4-1.7 6.8" fill="none" stroke="url(#fav-arrow)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

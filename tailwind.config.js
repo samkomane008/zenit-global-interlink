@@ -9,7 +9,7 @@ export default {
       },
       colors: {
         navy: "#0B1F3A",
-        orange: "#FF7A00",
+        azure: "#0E7AC0",
       },
     },
   },

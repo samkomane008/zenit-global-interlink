@@ -38,16 +38,33 @@ async function submitToWeb3Forms(fields) {
 const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 
 // ---------- Logo ----------
-function ZenitLogo({ light = false, className = "h-9 w-9" }) {
-  const stroke = light ? "#FFFFFF" : "#0B1F3A";
-  const accent = "#FF7A00";
+// Glossy blue globe with an upward arrow swoosh — "taking you to greater heights".
+function ZenitLogo({ className = "h-9 w-9" }) {
   return (
     <svg viewBox="0 0 48 48" className={className} fill="none" aria-hidden="true">
-      <circle cx="24" cy="24" r="16" stroke={stroke} strokeWidth="2" />
-      <path d="M8 24h32M24 8c4.5 4.5 7 10 7 16s-2.5 11.5-7 16c-4.5-4.5-7-10-7-16s2.5-11.5 7-16Z" stroke={stroke} strokeWidth="1.4" opacity="0.5" />
-      <path d="M10 30c5-2 9-2 14-2s9 0 14 2" stroke={stroke} strokeWidth="1.4" opacity="0.35" />
-      <path d="M14 26c4 6 14 9 22 2" stroke={accent} strokeWidth="2.6" strokeLinecap="round" />
-      <path d="M30 22.5l7 4.5-7 4.5" stroke={accent} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" fill={accent} />
+      <defs>
+        <radialGradient id="zgl-sphere" cx="37%" cy="29%" r="78%">
+          <stop offset="0%" stopColor="#EAF7FF" />
+          <stop offset="26%" stopColor="#9BD7F5" />
+          <stop offset="60%" stopColor="#2E97D6" />
+          <stop offset="100%" stopColor="#0B4F86" />
+        </radialGradient>
+        <linearGradient id="zgl-arrow" x1="12" y1="32" x2="34" y2="15" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#0B5D9E" />
+          <stop offset="100%" stopColor="#2E97D6" />
+        </linearGradient>
+      </defs>
+      {/* sphere */}
+      <circle cx="24" cy="24" r="17" fill="url(#zgl-sphere)" />
+      <circle cx="24" cy="24" r="17" fill="none" stroke="#0B4F86" strokeOpacity="0.35" strokeWidth="1" />
+      {/* glossy top highlight */}
+      <ellipse cx="18.5" cy="15.5" rx="10" ry="5.2" fill="#FFFFFF" opacity="0.5" />
+      {/* secondary arrow (behind) */}
+      <path d="M12.5 25c5.5 1.2 11.2-0.6 15.5-6.6" fill="none" stroke="#0B4F86" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
+      {/* main arrow swooshing up-right */}
+      <path d="M11.5 30.5c7 1.6 14.4-0.7 20-9" fill="none" stroke="url(#zgl-arrow)" strokeWidth="3.1" strokeLinecap="round" />
+      <path d="M26 20.4l7-2.6-1.8 7.2" fill="none" stroke="url(#zgl-arrow)" strokeWidth="3.1" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M11.5 30.5c7 1.6 14.4-0.7 20-9" fill="none" stroke="#FFFFFF" strokeWidth="0.9" strokeLinecap="round" opacity="0.45" />
     </svg>
   );
 }
@@ -55,12 +72,12 @@ function ZenitLogo({ light = false, className = "h-9 w-9" }) {
 function LogoLockup({ light = false }) {
   return (
     <div className="flex items-center gap-2.5">
-      <ZenitLogo light={light} />
+      <ZenitLogo />
       <div className="flex flex-col leading-none">
         <span className={`font-extrabold text-[15px] tracking-tight ${light ? "text-white" : "text-[#0B1F3A]"}`} style={{ fontFamily: "Poppins, sans-serif" }}>
-          ZENIT <span style={{ color: "#FF7A00" }}>GLOBAL</span>
+          ZENIT <span style={{ color: light ? "#5CC0F0" : "#0E7AC0" }}>GLOBAL</span>
         </span>
-        <span className={`text-[9px] tracking-[0.18em] ${light ? "text-blue-100/70" : "text-[#344054]/70"}`}>INTERLINK</span>
+        <span className={`text-[9px] tracking-[0.22em] ${light ? "text-sky-200/80" : "text-[#0E7AC0]/80"}`}>INTERLINK</span>
       </div>
     </div>
   );
@@ -142,7 +159,7 @@ function PageHeader({ eyebrow, title, subtitle }) {
       <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full blur-3xl" style={{ background: "radial-gradient(circle, rgba(0,102,255,0.25), transparent 70%)" }} />
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10">
         <Reveal>
-          <span className="text-xs font-bold tracking-[0.2em] uppercase" style={{ color: "#FF7A00" }}>{eyebrow}</span>
+          <span className="text-xs font-bold tracking-[0.2em] uppercase" style={{ color: "#0E7AC0" }}>{eyebrow}</span>
           <h1 className="mt-3 font-extrabold text-white leading-tight" style={{ fontFamily: "Poppins, sans-serif", fontSize: "clamp(2.2rem, 4.2vw, 3.4rem)" }}>{title}</h1>
           {subtitle && <p className="mt-4 text-blue-100/70 max-w-2xl text-lg leading-relaxed">{subtitle}</p>}
         </Reveal>
@@ -181,13 +198,13 @@ function Nav({ page, setPage }) {
           {links.map((l) => (
             <button key={l.page} onClick={() => go(l.page)} className={`text-sm font-medium transition-colors relative group ${page === l.page ? "text-white" : "text-white/80 hover:text-white"}`}>
               {l.label}
-              <span className={`absolute -bottom-1.5 left-0 h-[1.5px] bg-[#FF7A00] transition-all duration-300 ${page === l.page ? "w-full" : "w-0 group-hover:w-full"}`} />
+              <span className={`absolute -bottom-1.5 left-0 h-[1.5px] bg-[#0E7AC0] transition-all duration-300 ${page === l.page ? "w-full" : "w-0 group-hover:w-full"}`} />
             </button>
           ))}
         </div>
         <div className="hidden lg:flex items-center gap-3">
           <button onClick={() => go("contact")} className="text-sm font-semibold text-white px-5 py-2.5 rounded-lg border border-white/30 hover:bg-white/10 transition-all">Contact Us</button>
-          <button onClick={() => go("quote")} className="text-sm font-semibold text-white px-5 py-2.5 rounded-lg transition-all hover:shadow-lg hover:shadow-orange-500/30 hover:-translate-y-0.5 flex items-center gap-1.5" style={{ background: "linear-gradient(135deg, #FF7A00, #FF9933)" }}>
+          <button onClick={() => go("quote")} className="text-sm font-semibold text-white px-5 py-2.5 rounded-lg transition-all hover:shadow-lg hover:shadow-sky-500/30 hover:-translate-y-0.5 flex items-center gap-1.5" style={{ background: "linear-gradient(135deg, #0E7AC0, #34A9E0)" }}>
             Request Quote <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -198,7 +215,7 @@ function Nav({ page, setPage }) {
           {links.map((l) => (
             <button key={l.page} onClick={() => go(l.page)} className="text-left text-white font-medium py-1">{l.label}</button>
           ))}
-          <button onClick={() => go("quote")} className="mt-2 text-sm font-semibold text-white px-5 py-3 rounded-lg" style={{ background: "linear-gradient(135deg, #FF7A00, #FF9933)" }}>Request Quote</button>
+          <button onClick={() => go("quote")} className="mt-2 text-sm font-semibold text-white px-5 py-3 rounded-lg" style={{ background: "linear-gradient(135deg, #0E7AC0, #34A9E0)" }}>Request Quote</button>
         </div>
       )}
     </nav>
@@ -211,9 +228,9 @@ function Hero({ setPage }) {
     <section className="relative min-h-[100vh] flex items-center overflow-hidden" style={{ background: "linear-gradient(160deg, #0B1F3A 0%, #0d2547 45%, #0B1F3A 100%)" }}>
       <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundImage: "repeating-linear-gradient(115deg, transparent 0px, transparent 70px, #ffffff 70px, #ffffff 72px)" }} />
       <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full blur-3xl" style={{ background: "radial-gradient(circle, rgba(0,102,255,0.35), transparent 70%)" }} />
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full blur-3xl" style={{ background: "radial-gradient(circle, rgba(255,122,0,0.18), transparent 70%)" }} />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full blur-3xl" style={{ background: "radial-gradient(circle, rgba(28,143,214,0.18), transparent 70%)" }} />
       <div className="absolute bottom-24 left-0 w-full overflow-hidden h-px">
-        <div className="h-px bg-gradient-to-r from-transparent via-orange-400/60 to-transparent w-1/3 animate-[slide_4s_linear_infinite]" />
+        <div className="h-px bg-gradient-to-r from-transparent via-sky-400/60 to-transparent w-1/3 animate-[slide_4s_linear_infinite]" />
       </div>
       <style>{`@keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(400%); } } @keyframes floatY { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-12px); } }`}</style>
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-32 pb-20 w-full grid lg:grid-cols-[1.15fr,0.85fr] gap-16 items-center">
@@ -226,7 +243,7 @@ function Hero({ setPage }) {
           </Reveal>
           <Reveal delay={100}>
             <h1 className="font-extrabold text-white leading-[1.05] tracking-tight" style={{ fontFamily: "Poppins, sans-serif", fontSize: "clamp(2.6rem, 5.2vw, 4.6rem)" }}>
-              Logistics<br />Without <span style={{ color: "#FF7A00" }}>Limits.</span>
+              Logistics<br />Without <span style={{ color: "#0E7AC0" }}>Limits.</span>
             </h1>
           </Reveal>
           <Reveal delay={200}>
@@ -236,7 +253,7 @@ function Hero({ setPage }) {
           </Reveal>
           <Reveal delay={300}>
             <div className="mt-10 flex flex-wrap gap-4">
-              <button onClick={() => setPage("quote")} className="group text-sm font-semibold text-white px-7 py-4 rounded-xl transition-all hover:shadow-2xl hover:shadow-orange-500/40 hover:-translate-y-1 flex items-center gap-2" style={{ background: "linear-gradient(135deg, #FF7A00, #FF9933)" }}>
+              <button onClick={() => setPage("quote")} className="group text-sm font-semibold text-white px-7 py-4 rounded-xl transition-all hover:shadow-2xl hover:shadow-sky-500/40 hover:-translate-y-1 flex items-center gap-2" style={{ background: "linear-gradient(135deg, #0E7AC0, #34A9E0)" }}>
                 Request a Quote <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
               <button onClick={() => setPage("contact")} className="text-sm font-semibold text-white px-7 py-4 rounded-xl border border-white/30 backdrop-blur-sm hover:bg-white/10 transition-all">Contact Us</button>
@@ -246,7 +263,7 @@ function Hero({ setPage }) {
         <div className="relative hidden lg:block h-[420px]">
           <Reveal delay={250}>
             <div className="absolute top-0 right-4 w-64 p-5 rounded-2xl border border-white/10 backdrop-blur-xl shadow-2xl" style={{ background: "rgba(255,255,255,0.06)", animation: "floatY 6s ease-in-out infinite" }}>
-              <Truck className="w-6 h-6 text-[#FF7A00] mb-3" />
+              <Truck className="w-6 h-6 text-[#0E7AC0] mb-3" />
               <p className="text-white font-semibold text-sm">Cross-Border Fleet</p>
               <p className="text-blue-100/60 text-xs mt-1">Live route tracking across 7 SADC corridors</p>
             </div>
@@ -311,7 +328,7 @@ function Services({ setPage }) {
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
         <Reveal>
           <div className="max-w-2xl mb-14">
-            <span className="text-xs font-bold tracking-[0.2em] uppercase" style={{ color: "#FF7A00" }}>What We Do</span>
+            <span className="text-xs font-bold tracking-[0.2em] uppercase" style={{ color: "#0E7AC0" }}>What We Do</span>
             <h2 className="mt-3 font-extrabold text-3xl lg:text-4xl" style={{ fontFamily: "Poppins, sans-serif", color: "#0B1F3A" }}>Full-Spectrum Logistics Solutions</h2>
             <p className="mt-4 text-[#344054] leading-relaxed">From a single pallet to a full cross-border fleet movement, we engineer logistics solutions that scale with your business.</p>
           </div>
@@ -322,12 +339,12 @@ function Services({ setPage }) {
             return (
               <Reveal key={s.title} delay={i * 80}>
                 <div onClick={() => setPage("services")} className="group relative p-7 rounded-2xl bg-white border border-slate-100 hover:border-transparent transition-all duration-400 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgba(11,31,58,0.12)] cursor-pointer overflow-hidden">
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400" style={{ background: "linear-gradient(135deg, rgba(0,102,255,0.04), rgba(255,122,0,0.04))" }} />
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400" style={{ background: "linear-gradient(135deg, rgba(0,102,255,0.04), rgba(28,143,214,0.04))" }} />
                   <div className="relative z-10">
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-transform duration-400 group-hover:scale-110" style={{ background: "linear-gradient(135deg, #0B1F3A, #0066FF)" }}><Icon className="w-6 h-6 text-white" /></div>
                     <h3 className="font-bold text-lg mb-2" style={{ fontFamily: "Poppins, sans-serif", color: "#0B1F3A" }}>{s.title}</h3>
                     <p className="text-sm text-[#344054] leading-relaxed">{s.desc}</p>
-                    <div className="mt-4 flex items-center gap-1 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "#FF7A00" }}>Learn more <ChevronRight className="w-4 h-4" /></div>
+                    <div className="mt-4 flex items-center gap-1 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "#0E7AC0" }}>Learn more <ChevronRight className="w-4 h-4" /></div>
                   </div>
                 </div>
               </Reveal>
@@ -347,7 +364,7 @@ function WhyChooseUs() {
       <div className="max-w-7xl mx-auto px-6 lg:px-10 relative z-10 grid lg:grid-cols-2 gap-16 items-center">
         <Reveal>
           <div>
-            <span className="text-xs font-bold tracking-[0.2em] uppercase" style={{ color: "#FF7A00" }}>Why Zenit</span>
+            <span className="text-xs font-bold tracking-[0.2em] uppercase" style={{ color: "#0E7AC0" }}>Why Zenit</span>
             <h2 className="mt-3 font-extrabold text-3xl lg:text-4xl text-white" style={{ fontFamily: "Poppins, sans-serif" }}>Built On Trust, Driven By Performance</h2>
             <p className="mt-4 text-blue-100/70 leading-relaxed max-w-lg">We combine deep industry expertise with a technology-driven approach, giving clients full visibility and confidence in every shipment.</p>
           </div>
@@ -371,7 +388,7 @@ function WhyChooseUs() {
 
 function CTABanner({ setPage }) {
   return (
-    <section className="py-20" style={{ background: "linear-gradient(135deg, #FF7A00, #FF9933)" }}>
+    <section className="py-20" style={{ background: "linear-gradient(135deg, #0E7AC0, #34A9E0)" }}>
       <Reveal>
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h2 className="font-extrabold text-3xl lg:text-4xl text-white" style={{ fontFamily: "Poppins, sans-serif" }}>Ready To Move Your Cargo Forward?</h2>
@@ -414,11 +431,11 @@ function ServicesPage({ setPage }) {
                     <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style={{ background: "linear-gradient(135deg, #0B1F3A, #0066FF)" }}><Icon className="w-7 h-7 text-white" /></div>
                     <h3 className="font-extrabold text-2xl mb-3" style={{ fontFamily: "Poppins, sans-serif", color: "#0B1F3A" }}>{s.title}</h3>
                     <p className="text-[#344054] leading-relaxed">{s.detail}</p>
-                    <button onClick={() => setPage("quote")} className="mt-6 inline-flex items-center gap-2 text-sm font-bold px-6 py-3 rounded-xl text-white transition-all hover:-translate-y-0.5 hover:shadow-lg" style={{ background: "linear-gradient(135deg, #FF7A00, #FF9933)" }}>Get a Quote <ArrowRight className="w-4 h-4" /></button>
+                    <button onClick={() => setPage("quote")} className="mt-6 inline-flex items-center gap-2 text-sm font-bold px-6 py-3 rounded-xl text-white transition-all hover:-translate-y-0.5 hover:shadow-lg" style={{ background: "linear-gradient(135deg, #0E7AC0, #34A9E0)" }}>Get a Quote <ArrowRight className="w-4 h-4" /></button>
                   </div>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="p-5 rounded-2xl bg-white border border-slate-100">
-                      <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: "#FF7A00" }}>Benefits</p>
+                      <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: "#0E7AC0" }}>Benefits</p>
                       <ul className="space-y-2">
                         {s.benefits.map((b) => (<li key={b} className="text-sm text-[#344054] flex items-start gap-2"><span className="w-1.5 h-1.5 rounded-full bg-[#0066FF] mt-1.5 shrink-0" />{b}</li>))}
                       </ul>
@@ -462,7 +479,7 @@ function IndustriesPage() {
             return (
               <Reveal key={ind.title} delay={i * 70}>
                 <div className="p-7 rounded-2xl bg-white border border-slate-100 hover:-translate-y-1.5 hover:shadow-[0_20px_50px_rgba(11,31,58,0.1)] transition-all duration-400">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ background: "linear-gradient(135deg, #FF7A00, #FF9933)" }}><Icon className="w-6 h-6 text-white" /></div>
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style={{ background: "linear-gradient(135deg, #0E7AC0, #34A9E0)" }}><Icon className="w-6 h-6 text-white" /></div>
                   <h3 className="font-bold text-lg mb-2" style={{ fontFamily: "Poppins, sans-serif", color: "#0B1F3A" }}>{ind.title}</h3>
                   <p className="text-sm text-[#344054] leading-relaxed">{ind.desc}</p>
                 </div>
@@ -508,10 +525,10 @@ function AboutPage() {
             {TIMELINE.map((t, i) => (
               <Reveal key={t.year} delay={i * 100}>
                 <div className={`relative flex lg:items-center mb-10 last:mb-0 ${i % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"}`}>
-                  <div className="absolute left-0 lg:left-1/2 lg:-translate-x-1/2 w-4 h-4 rounded-full border-4 border-white shadow" style={{ background: "#FF7A00" }} />
+                  <div className="absolute left-0 lg:left-1/2 lg:-translate-x-1/2 w-4 h-4 rounded-full border-4 border-white shadow" style={{ background: "#0E7AC0" }} />
                   <div className={`pl-8 lg:pl-0 lg:w-1/2 ${i % 2 === 0 ? "lg:pr-12 lg:text-right" : "lg:pl-12"}`}>
                     <div className="inline-block p-5 rounded-2xl bg-white border border-slate-100 shadow-sm">
-                      <span className="font-extrabold text-xl" style={{ fontFamily: "Poppins, sans-serif", color: "#FF7A00" }}>{t.year}</span>
+                      <span className="font-extrabold text-xl" style={{ fontFamily: "Poppins, sans-serif", color: "#0E7AC0" }}>{t.year}</span>
                       <p className="text-sm font-medium text-[#344054] mt-1">{t.label}</p>
                     </div>
                   </div>
@@ -603,7 +620,7 @@ function TestimonialsSection() {
           {TESTIMONIALS.map((t, i) => (
             <Reveal key={t.name} delay={i * 90}>
               <div className="p-7 rounded-2xl border border-slate-100 bg-[#F8FAFC] h-full flex flex-col">
-                <QuoteIcon className="w-7 h-7 mb-4" style={{ color: "#FF7A00" }} />
+                <QuoteIcon className="w-7 h-7 mb-4" style={{ color: "#0E7AC0" }} />
                 <p className="text-[#344054] leading-relaxed flex-1">"{t.quote}"</p>
                 <div className="mt-5 flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-sm" style={{ background: "linear-gradient(135deg, #0B1F3A, #0066FF)" }}>{t.name.split(" ").map(n=>n[0]).join("")}</div>
@@ -762,7 +779,7 @@ function QuotePage({ onAction }) {
                 </div>
               </div>
               {status.error && <p className="mt-5 text-sm font-medium text-red-500">{status.error}</p>}
-              <button type="submit" disabled={status.loading} className="mt-7 w-full text-sm font-bold text-white px-7 py-4 rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:hover:translate-y-0" style={{ background: "linear-gradient(135deg, #FF7A00, #FF9933)" }}>
+              <button type="submit" disabled={status.loading} className="mt-7 w-full text-sm font-bold text-white px-7 py-4 rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:hover:translate-y-0" style={{ background: "linear-gradient(135deg, #0E7AC0, #34A9E0)" }}>
                 {status.loading ? <>Sending… <Loader2 className="w-4 h-4 animate-spin" /></> : <>Submit Quote Request <Send className="w-4 h-4" /></>}
               </button>
               <p className="mt-3 text-xs text-center text-[#344054]/60">We typically respond within 24 hours. Fields marked * are required.</p>
@@ -830,7 +847,7 @@ function ContactPage({ onAction }) {
               {contactCards.map((c) => {
                 const Icon = c.icon;
                 return (
-                  <a key={c.label} href={c.href} target={c.label === "Location" ? "_blank" : undefined} rel="noopener noreferrer" className="flex items-center gap-4 p-5 rounded-2xl border border-slate-100 bg-[#F8FAFC] hover:border-[#FF7A00]/40 hover:shadow-md transition-all">
+                  <a key={c.label} href={c.href} target={c.label === "Location" ? "_blank" : undefined} rel="noopener noreferrer" className="flex items-center gap-4 p-5 rounded-2xl border border-slate-100 bg-[#F8FAFC] hover:border-[#0E7AC0]/40 hover:shadow-md transition-all">
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ background: "linear-gradient(135deg, #0B1F3A, #0066FF)" }}><Icon className="w-5 h-5 text-white" /></div>
                     <div><p className="text-xs font-bold uppercase tracking-wider text-[#344054]/60">{c.label}</p><p className="font-semibold text-[#0B1F3A]">{c.value}</p></div>
                   </a>
@@ -868,7 +885,7 @@ function ContactPage({ onAction }) {
                   <FieldError msg={errors.message} />
                 </div>
                 {status.error && <p className="text-sm font-medium text-red-500">{status.error}</p>}
-                <button type="submit" disabled={status.loading} className="w-full text-sm font-bold text-white px-7 py-4 rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:hover:translate-y-0" style={{ background: "linear-gradient(135deg, #FF7A00, #FF9933)" }}>
+                <button type="submit" disabled={status.loading} className="w-full text-sm font-bold text-white px-7 py-4 rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center gap-2 disabled:opacity-70 disabled:hover:translate-y-0" style={{ background: "linear-gradient(135deg, #0E7AC0, #34A9E0)" }}>
                   {status.loading ? <>Sending… <Loader2 className="w-4 h-4 animate-spin" /></> : "Send Message"}
                 </button>
               </div>
@@ -905,9 +922,9 @@ function Footer({ setPage, onAction }) {
 
   return (
     <footer className="relative pt-20 pb-8 overflow-hidden" style={{ background: "linear-gradient(165deg, #0B1F3A, #060f1f)" }}>
-      <div className="absolute top-0 left-0 right-0 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(255,122,0,0.5), transparent)" }} />
+      <div className="absolute top-0 left-0 right-0 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(28,143,214,0.5), transparent)" }} />
       <div className="absolute -top-40 left-1/3 w-96 h-96 rounded-full blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, rgba(0,102,255,0.15), transparent 70%)" }} />
-      <div className="absolute -bottom-32 -right-32 w-[420px] h-[420px] rounded-full blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, rgba(255,122,0,0.08), transparent 70%)" }} />
+      <div className="absolute -bottom-32 -right-32 w-[420px] h-[420px] rounded-full blur-3xl pointer-events-none" style={{ background: "radial-gradient(circle, rgba(28,143,214,0.08), transparent 70%)" }} />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10">
         <Reveal>
@@ -918,8 +935,8 @@ function Footer({ setPage, onAction }) {
               {status.error && <p className="text-xs text-red-300 mt-1.5">{status.error}</p>}
             </div>
             <div className="flex w-full lg:w-auto items-center gap-3">
-              <input value={email} onChange={(e) => { setEmail(e.target.value); setStatus({ loading: false, error: "" }); }} type="email" placeholder="you@company.com" className="flex-1 lg:w-64 h-12 px-4 rounded-xl border border-white/15 bg-white/5 text-sm text-white placeholder:text-blue-100/40 leading-none focus:outline-none focus:ring-2 focus:ring-[#FF7A00]/40" />
-              <button type="submit" disabled={status.loading} style={{ background: "linear-gradient(135deg, #FF7A00, #FF9933)" }} className="h-12 px-5 rounded-xl text-sm font-bold text-white shrink-0 inline-flex items-center justify-center gap-2 whitespace-nowrap leading-none disabled:opacity-70">
+              <input value={email} onChange={(e) => { setEmail(e.target.value); setStatus({ loading: false, error: "" }); }} type="email" placeholder="you@company.com" className="flex-1 lg:w-64 h-12 px-4 rounded-xl border border-white/15 bg-white/5 text-sm text-white placeholder:text-blue-100/40 leading-none focus:outline-none focus:ring-2 focus:ring-[#0E7AC0]/40" />
+              <button type="submit" disabled={status.loading} style={{ background: "linear-gradient(135deg, #0E7AC0, #34A9E0)" }} className="h-12 px-5 rounded-xl text-sm font-bold text-white shrink-0 inline-flex items-center justify-center gap-2 whitespace-nowrap leading-none disabled:opacity-70">
                 {status.loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Subscribe <Send className="w-3.5 h-3.5" /></>}
               </button>
             </div>
@@ -932,7 +949,7 @@ function Footer({ setPage, onAction }) {
             <p className="mt-5 text-sm text-blue-100/60 leading-relaxed max-w-xs">Taking You To Greater Heights — reliable freight, import, export, and supply chain solutions across South Africa and beyond.</p>
             <div className="flex gap-3 mt-6">
               {SOCIAL_LINKS.map(({ icon: Icon, label, href }) => (
-                <a key={label} href={href} aria-label={label} target={href !== "#" ? "_blank" : undefined} rel="noopener noreferrer" className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-blue-100/70 hover:text-white hover:border-[#FF7A00] hover:bg-white/5 transition-all"><Icon className="w-4 h-4" /></a>
+                <a key={label} href={href} aria-label={label} target={href !== "#" ? "_blank" : undefined} rel="noopener noreferrer" className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-blue-100/70 hover:text-white hover:border-[#0E7AC0] hover:bg-white/5 transition-all"><Icon className="w-4 h-4" /></a>
               ))}
             </div>
           </div>
@@ -954,9 +971,9 @@ function Footer({ setPage, onAction }) {
           <div>
             <h4 className="text-white font-semibold text-sm mb-4">Contact</h4>
             <ul className="space-y-3 text-sm text-blue-100/60">
-              <li className="flex items-center gap-2"><Phone className="w-4 h-4 text-[#FF7A00]" /> <a href={CONTACT.phoneHref} className="hover:text-white transition-colors">{CONTACT.phone}</a></li>
-              <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-[#FF7A00]" /> <a href={`mailto:${CONTACT.email}`} className="hover:text-white transition-colors">{CONTACT.email}</a></li>
-              <li className="flex items-center gap-2"><MapPin className="w-4 h-4 text-[#FF7A00]" /> Centurion, Gauteng, SA</li>
+              <li className="flex items-center gap-2"><Phone className="w-4 h-4 text-[#0E7AC0]" /> <a href={CONTACT.phoneHref} className="hover:text-white transition-colors">{CONTACT.phone}</a></li>
+              <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-[#0E7AC0]" /> <a href={`mailto:${CONTACT.email}`} className="hover:text-white transition-colors">{CONTACT.email}</a></li>
+              <li className="flex items-center gap-2"><MapPin className="w-4 h-4 text-[#0E7AC0]" /> Centurion, Gauteng, SA</li>
             </ul>
           </div>
         </div>
