@@ -115,36 +115,30 @@ If you move to a different domain, update `public/CNAME` **and** the canonical /
 
 ---
 
-## 4. Email — `info@zenitglobal.co.za` (Zoho Mail)
+## 4. Email — `info@zenitglobal.co.za` (GoDaddy Professional Email)
 
-Mail is hosted on **Zoho Mail**. Email records live on the **apex** and coexist
-fine with the GitHub Pages A-records above (different record types). Values below
-are Zoho's global/US data centre — if your Zoho account is on `zoho.eu` /
-`zoho.in`, use the regional equivalents the Zoho wizard shows.
+Mail is hosted on **GoDaddy Professional Email** (set up 8 Jul 2026), on the same
+account that holds the domain. GoDaddy manages the email DNS automatically —
+these records live on the apex and coexist fine with the GitHub Pages A-records
+(different record types):
 
-Setup order in Zoho: add domain → verify → create the `info@` mailbox → MX →
-DKIM → SPF + DMARC.
-
-| Purpose | Host | Type | Priority | Value |
-| ------- | ---- | ---- | -------- | ----- |
-| Verify domain | *(from Zoho — CNAME `zb******` → `zmverify.zoho.com`, or TXT `zoho-verification=zb******.zmverify.zoho.com`)* | | | |
-| Receive mail | `@` | MX | 10 | `mx.zoho.com` |
-| Receive mail | `@` | MX | 20 | `mx2.zoho.com` |
-| Receive mail | `@` | MX | 50 | `mx3.zoho.com` |
-| SPF | `@` | TXT | — | `v=spf1 include:zoho.com ~all` |
-| DKIM | `zmail._domainkey` | TXT | — | `v=DKIM1; k=rsa; p=<key generated in Zoho console>` |
-| DMARC | `_dmarc` | TXT | — | `v=DMARC1; p=quarantine; rua=mailto:info@zenitglobal.co.za` |
+| Purpose | Host | Type | Value |
+| ------- | ---- | ---- | ----- |
+| Receive mail | `@` | MX | `smtp.secureserver.net` (prio 0) / `mailstore1.secureserver.net` (prio 10) |
+| SPF | `@` | TXT | `v=spf1 include:secureserver.net -all` |
+| DMARC | `_dmarc` | TXT | GoDaddy default (`p=quarantine`) — consider repointing `rua=` to `info@zenitglobal.co.za` so the client gets the reports |
 
 Notes:
 
-- Remove any default/registrar MX records so mail doesn't misroute.
-- Only **one** SPF (`v=spf1`) TXT record may exist on the apex — merge if one
-  already exists.
-- Generate the DKIM key under **Zoho Admin Console → Email Configuration → DKIM**
-  (default selector `zmail`), then click **Verify** to activate.
+- Webmail is at <https://email.godaddy.com>; the mailbox also works in
+  phone/desktop mail apps via GoDaddy's IMAP/SMTP settings.
+- Don't hand-edit the MX/SPF records — GoDaddy owns them while mail is hosted
+  there. If mail ever moves (e.g. to Zoho), replace MX + SPF together.
+- Only **one** SPF (`v=spf1`) TXT record may exist on the apex.
 - **Contact form delivery** is separate: quote/contact submissions go wherever the
-  **Web3Forms** access key (`VITE_WEB3FORMS_KEY`) is registered — set that
-  account's receiving address to `info@zenitglobal.co.za` once the mailbox is live.
+  **Web3Forms** access key (`VITE_WEB3FORMS_KEY`) is registered — create a key for
+  `info@zenitglobal.co.za` at web3forms.com and update the GitHub Actions secret
+  so form mail lands in the client mailbox.
 
 ---
 
