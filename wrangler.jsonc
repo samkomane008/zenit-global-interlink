@@ -2,6 +2,10 @@
 {
   "name": "zenit-global-interlink",
   "compatibility_date": "2026-10-19",
+  "routes": [
+    { "pattern": "zenitglobal.co.za", "custom_domain": true },
+    { "pattern": "www.zenitglobal.co.za", "custom_domain": true }
+  ],
   "assets": {
     "directory": "dist",
     "not_found_handling": "404-page"
