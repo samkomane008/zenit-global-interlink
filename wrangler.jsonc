@@ -1,0 +1,9 @@
+// Cloudflare Workers static site. GitHub Actions runs the Vite build into dist, then deploys it.
+{
+  "name": "zenit-global-interlink",
+  "compatibility_date": "2026-10-19",
+  "assets": {
+    "directory": "dist",
+    "not_found_handling": "404-page"
+  }
+}
