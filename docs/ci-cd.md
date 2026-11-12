@@ -1,28 +1,25 @@
 # Zenit Global Interlink CI/CD
 
-`ci.yml` builds and validates pull requests and pushes to `main`.
-`deploy-cloudflare.yml` now runs **only after the separate `ci` workflow
-succeeds on a push to main**. It checks the exact commit is still current
-main, checks the client-approved form key and Cloudflare configuration,
-builds that commit and deploys its static assets using `wrangler.jsonc`.
-A failed CI or stale SHA cannot publish a new site.
+`.github/workflows/ci.yml` builds the site on pull requests and
+`main`. Its separate `deploy` job runs **only on pushes to main**
+and requires the `build` job to succeed (`needs: build`). The
+release uses the same checked-out main revision, checks that main
+has not moved while preparing the release, verifies the client's
+existing Cloudflare and Web3Forms configuration, builds the static
+assets and publishes with `wrangler.jsonc`.
+
+The old privileged `workflow_run` deployment has been removed to
+avoid using a second untrusted workflow as a release trigger.
 
 Repository secrets:
-- `CLOUDFLARE_API_TOKEN`: restricted Cloudflare Workers deploy token
-- `VITE_WEB3FORMS_KEY`: the client's approved form destination access key
+- `CLOUDFLARE_API_TOKEN`: scoped Cloudflare Workers deploy token
+- `VITE_WEB3FORMS_KEY`: client-approved form destination key
 
 Repository variable:
-- `CLOUDFLARE_ACCOUNT_ID`: the configured Cloudflare account
+- `CLOUDFLARE_ACCOUNT_ID`: actual Cloudflare account
 
-Missing configuration **fails the deployment visibly** instead of
-reporting a green workflow that silently skipped publishing. Keep
-Cloudflare/Wrangler credentials secret and never replace the client's
-Web3Forms destination without authorisation.
-
-Watch Actions → `ci` and then `Deploy to Cloudflare`. A successful
-deploy step means Cloudflare accepted the new assets; the subsequent
-HTTPS check verifies the public endpoint responds. It does not guarantee
-that every external CDN cache refreshed instantly. Preserve the client's
-MX/SPF/DMARC records when changing website routing. If the deploy
-fails, the current live Workers deployment remains in place; inspect
-the logs before manually issuing another deploy.
+Missing configuration **fails deployment visibly**, rather than making
+a successful job silently skip publication. Build failures block
+deployment. Existing DNS, approved client content and email DNS
+remain unchanged. Check the `cloudflare-production` job of the
+`ci` workflow after merge for the deployment logs and live smoke result.
