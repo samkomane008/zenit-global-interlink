@@ -83,8 +83,10 @@ jobs:
         run: npx --yes wrangler@4 deploy
 
       - name: Public HTTPS smoke check
+        env:
+          SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           set -euo pipefail
           curl --retry 5 --retry-delay 3 --fail --silent --show-error --max-time 20 \
             -o /dev/null https://zenitglobal.co.za/
-          echo "::notice::Cloudflare deploy succeeded for ${{ github.event.workflow_run.head_sha }}."
+          echo "::notice::Cloudflare deploy succeeded for $SHA."
