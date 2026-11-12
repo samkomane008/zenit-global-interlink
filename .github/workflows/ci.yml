@@ -29,3 +29,56 @@ jobs:
         run: npm ci
       - name: Validate production build
         run: npm run build
+
+  deploy:
+    name: cloudflare-production
+    needs: build
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment:
+      name: zenit-production
+      url: https://zenitglobal.co.za
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Validate client-approved Cloudflare and form configuration
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          WEB3FORMS_KEY: ${{ secrets.VITE_WEB3FORMS_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$CF_TOKEN" || { echo "::error::Missing CLOUDFLARE_API_TOKEN secret"; exit 1; }
+          test -n "$CF_ACCOUNT" || { echo "::error::Missing CLOUDFLARE_ACCOUNT_ID variable"; exit 1; }
+          test -n "$WEB3FORMS_KEY" || { echo "::error::Missing client-approved VITE_WEB3FORMS_KEY secret"; exit 1; }
+      - name: Build approved client production assets
+        env:
+          VITE_WEB3FORMS_KEY: ${{ secrets.VITE_WEB3FORMS_KEY }}
+        run: |
+          set -euo pipefail
+          npm ci
+          npm run build
+          test -s dist/index.html
+      - name: Verify CI checkout is still current main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')" = "$SHA" || {
+            echo "::error::main moved while release was building"; exit 1;
+          }
+      - name: Deploy to Cloudflare Workers
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx --yes wrangler@4 deploy
+      - name: Verify public HTTPS response
+        run: |
+          curl --retry 5 --retry-delay 3 --fail --silent --show-error --max-time 20 -o /dev/null https://zenitglobal.co.za/
