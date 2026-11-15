@@ -1,48 +1,77 @@
 name: Deploy to Cloudflare
 
+# Never run production secrets on a pull_request or an unverified main SHA.
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["ci"]
+    types: [completed]
 
 permissions:
   contents: read
+  actions: read
+  checks: read
+  pull-requests: read
 
 concurrency:
-  group: deploy
-  cancel-in-progress: true
+  group: zenit-cloudflare-production
+  cancel-in-progress: false
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-    env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+    if: >-
+      ${{ vars.ZENIT_DEPLOY_ENABLED == 'true'
+          && vars.ZENIT_DEPLOY_RUNNERS != ''
+          && contains(fromJSON(vars.ZENIT_DEPLOY_RUNNERS || '[]'), 'self-hosted')
+          && contains(fromJSON(vars.ZENIT_DEPLOY_RUNNERS || '[]'), 'zenit-deploy')
+          && github.event.workflow_run.conclusion == 'success'
+          && github.event.workflow_run.event == 'push'
+          && github.event.workflow_run.head_branch == 'main' }}
+    runs-on: ${{ fromJSON(vars.ZENIT_DEPLOY_RUNNERS || '["self-hosted","Linux","X64","zenit-deploy"]') }}
+    timeout-minutes: 35
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
         with:
-          node-version: 20
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+
+      - name: Require merged exact-current-main build, secret scan and CI push
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          bash scripts/release-eligible.sh \
+            --repo "$GITHUB_REPOSITORY" --sha "$SHA" \
+            --workflow ci.yml --job website-build --job secret-scan
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
           cache: npm
 
-      - run: npm ci
+      - name: Install locked dependencies
+        run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Build verified release
         env:
-          # Web3Forms access key for the Quote, Contact and Newsletter forms
           VITE_WEB3FORMS_KEY: ${{ secrets.VITE_WEB3FORMS_KEY }}
+        run: npm run build
 
-      - name: Keep the build for download
-        uses: actions/upload-artifact@v4
-        with:
-          name: site
-          path: dist
+      - name: Recheck main before publishing
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          [[ "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')" == "$SHA" ]] ||
+            { echo "::error::Main advanced; do not publish stale revision"; exit 1; }
 
-      # Skipped until the CLOUDFLARE_API_TOKEN secret is set on the repo
-      - name: Deploy
-        if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && env.CLOUDFLARE_API_TOKEN != '' }}
-        run: npx --yes wrangler@4 deploy
+      - name: Deploy verified site to Cloudflare
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          [[ -n "$CLOUDFLARE_API_TOKEN" && -n "$CLOUDFLARE_ACCOUNT_ID" ]] ||
+            { echo "::error::Cloudflare credentials not configured"; exit 1; }
+          npx --yes wrangler@4 deploy
